@@ -8,9 +8,8 @@
 // field values from in the game It also allows creating objects, configuration,
 // and importantly, hooking methods to modify their values
 #include "config-utils/shared/config-utils.hpp"
-#include "beatsaber-hook/shared/utils/hooking.hpp"
-#include "beatsaber-hook/shared/utils/il2cpp-functions.hpp"
-#include "beatsaber-hook/shared/utils/logging.hpp"
+#include "beatsaber-hook/shared/hooking.hpp"
+#include "beatsaber-hook/shared/api.hpp"
 
 
 #include "_config.hpp"

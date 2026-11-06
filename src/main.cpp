@@ -217,7 +217,7 @@ MOD_EXTERN_FUNC void setup(CModInfo *info) noexcept {
 
 // Called later on in the game loading - a good time to install function hooks
 MOD_EXTERN_FUNC void late_load() noexcept {
-    il2cpp_functions::Init();
+    i2c::functions::initialize();
 
 
     INFO("Installing hooks...");

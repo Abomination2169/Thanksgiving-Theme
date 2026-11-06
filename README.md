@@ -1,17 +1,26 @@
-## 🦃 Thanksgiving Theme — Video
+## 🦃 Thanksgiving Theme — Beat Saber 1.45.3 development port
 
-Watch Thanksgiving Theme in action!
+This branch is the separate Beat Saber **1.45.3** development port. The stable `main` branch and v1.0.0 release remain on Beat Saber 1.40.8.
 
-[![Thanksgiving Theme — Beat Saber](Thanksgiving-Banner.png)](https://www.youtube.com/watch?v=t5VIwbuC9vc)
+The port preserves the existing golden harvest menu, harvest decorations, falling leaves, and the two turkey gobble audio cues. It updates the QPM dependencies, Android NDK, and QMOD target to the 1.45.3 Quest build (`1.45.3_30054`).
 
-▶️ **Watch on YouTube:** https://www.youtube.com/watch?v=t5VIwbuC9vc
+**Status:** Development build only. CI compilation and package validation are not a substitute for headset testing. Do not install this build over your stable 1.40.8 setup.
 
-Happy Thanksgiving!
+## Building
 
-Transform your Beat Saber menu with golden harvest lighting, seasonal decorations, and falling leaves!
+Requirements:
+- QPM CLI
+- Android NDK 29.0.14206865
+- CMake 3.22+
+- Ninja
+- Python 3
 
-Based on the fantastic Christmas Mod by vcmikuu laynia.
+```sh
+qpm ndk resolve -d
+qpm restore
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+qpm qmod zip --import mod.json --skip_build -i ./build -i ./extern/libs -i ./assets
+```
 
-Note: Development assisted with use of A.I. Please support talented artists and coders whenever possible.
-
-**Compatible with:** Beat Saber 1.40.8 (Quest)
+The generated package targets Beat Saber `1.45.3_30054`. The stable 1.40.8 release is unchanged.

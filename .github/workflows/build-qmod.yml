@@ -5,6 +5,7 @@ on:
     branches:
       - main
       - maintenance/repository-cleanup
+      - port/beat-saber-1.45.3
     tags:
       - "v*"
   pull_request:
@@ -99,7 +100,7 @@ jobs:
               manifest = json.loads(archive.read("mod.json"))
               if manifest.get("id") != "thanksgiving":
                   raise SystemExit("Unexpected mod id in packaged manifest")
-              if manifest.get("packageVersion") != "1.40.8_7379":
+              if manifest.get("packageVersion") != "1.45.3_30054":
                   raise SystemExit("Packaged manifest no longer targets Beat Saber 1.40.8_7379")
               if "libthanksgiving.so" not in names:
                   raise SystemExit("QMOD is missing libthanksgiving.so")

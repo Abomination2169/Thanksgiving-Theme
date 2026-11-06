@@ -25,6 +25,14 @@
     {
       "id": "paper2_scotland2",
       "version": "^4.8.0"
+    },
+    {
+      "id": "flamingo",
+      "version": "^1.2.1"
+    },
+    {
+      "id": "reflectcpp",
+      "version": "^0.25.0"
     }
   ],
   "modFiles": [

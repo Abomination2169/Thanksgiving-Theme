@@ -24,8 +24,8 @@ using namespace Flair;
 
 namespace Thanksgiving::autumnLeaves {
 
-    SafePtrUnity<GameObject> dustGo;
-    SafePtrUnity<GameObject> autumnLeavesGo;
+    safe_ptr<GameObject*> dustGo;
+    safe_ptr<GameObject*> autumnLeavesGo;
 
     void CreateAutumnLeaves() {
         // Don't create if already created

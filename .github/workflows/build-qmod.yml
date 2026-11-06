@@ -65,9 +65,22 @@ jobs:
           print("Manifest fileCopies and cover image are present.")
           PY
 
+      - name: Configure Android build
+        run: |
+          NDK_TOOLCHAIN="$(find "$HOME/.local/share/QPM-RS/ndk" -path '*/build/cmake/android.toolchain.cmake' -print -quit)"
+          test -n "$NDK_TOOLCHAIN"
+          NDK_ROOT="${NDK_TOOLCHAIN%/build/cmake/android.toolchain.cmake}"
+          echo "ANDROID_NDK_HOME=$NDK_ROOT" >> "$GITHUB_ENV"
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compile Thanksgiving mod
+        run: |
+          cmake --build build --parallel
+          test -s build/libthanksgiving.so
+
       - name: Build and package QMOD
         run: |
-          qpm qmod zip
+          qpm qmod zip --import mod.json --skip_build --include_dirs ./build ./extern/libs ./assets
           test -s Thanksgiving.qmod
           cp Thanksgiving.qmod Thanksgiving-Theme.qmod
 
@@ -88,8 +101,9 @@ jobs:
               if cover and cover not in names:
                   raise SystemExit(f"QMOD is missing coverImage: {cover}")
               for entry in manifest.get("fileCopies", []):
-                  if entry["name"] not in names:
-                      raise SystemExit(f"QMOD is missing fileCopies entry: {entry['name']}")
+                  archive_name = Path(entry["name"]).name
+                  if archive_name not in names:
+                      raise SystemExit(f"QMOD is missing fileCopies asset: {archive_name}")
           print("QMOD archive contains its manifest, cover, and fileCopies assets.")
           PY
 

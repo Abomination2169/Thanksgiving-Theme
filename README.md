@@ -32,9 +32,11 @@ From the repository root, run:
 ```sh
 qpm ndk resolve -d
 qpm restore
-qpm qmod zip
+cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+cmake --build build --parallel
+qpm qmod zip --import mod.json --skip_build
 ```
 
-The QMOD output is configured as `Thanksgiving.qmod`. The two turkey audio clips are stored under `assets/` and referenced by their full archive paths in `mod.json`.
+The QMOD output is configured as `Thanksgiving.qmod`. The two turkey audio clips are stored under `assets/`; QPM searches that directory when packaging the filenames declared in `mod.json`.
 
 GitHub Actions builds and validates the QMOD on pushes and pull requests. Pushing a version tag (for example, `v1.0.1`) builds the package and publishes it with a source ZIP. Update the `version` in `mod.json` to match the tag before creating a release.

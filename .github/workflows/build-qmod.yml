@@ -35,8 +35,9 @@ jobs:
           curl -fsSL "https://github.com/QuestPackageManager/QPM.CLI/releases/download/${QPM_VERSION}/qpm-linux-x64.zip" -o "$RUNNER_TEMP/qpm.zip"
           mkdir -p "$RUNNER_TEMP/qpm"
           unzip -q "$RUNNER_TEMP/qpm.zip" -d "$RUNNER_TEMP/qpm"
-          QPM_BIN="$(find "$RUNNER_TEMP/qpm" -type f -name qpm -perm -u+x | head -n 1)"
+          QPM_BIN="$(find "$RUNNER_TEMP/qpm" -type f -name qpm | head -n 1)"
           test -n "$QPM_BIN"
+          chmod +x "$QPM_BIN"
           sudo install "$QPM_BIN" /usr/local/bin/qpm
           qpm --version
 

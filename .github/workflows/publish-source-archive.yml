@@ -3,8 +3,6 @@ name: Publish Thanksgiving source archive
 on:
   push:
     branches: [main]
-    paths:
-      - '.github/workflows/publish-source-archive.yml'
   workflow_dispatch:
 
 permissions:
@@ -18,11 +16,9 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Create source archive
-        run: |
-          zip -r Thanksgiving-Theme-GitHub-Source.zip README.md Source
+        run: zip -r Thanksgiving-Theme-GitHub-Source.zip README.md Source
 
       - name: Attach source archive to v1.0.0 release
         env:
           GH_TOKEN: ${{ github.token }}
-        run: |
-          gh release upload v1.0.0 Thanksgiving-Theme-GitHub-Source.zip --clobber --repo "${GITHUB_REPOSITORY}"
+        run: gh release upload v1.0.0 Thanksgiving-Theme-GitHub-Source.zip --clobber --repo "${GITHUB_REPOSITORY}"

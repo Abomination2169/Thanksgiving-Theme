@@ -61,6 +61,16 @@
         "id": "bs-cordl",
         "versionRange": "^4503.0.0",
         "additionalData": {}
+      },
+      {
+        "id": "flamingo",
+        "versionRange": "^1.2.1",
+        "additionalData": {}
+      },
+      {
+        "id": "reflectcpp",
+        "versionRange": "^0.25.0",
+        "additionalData": {}
       }
     ]
   },

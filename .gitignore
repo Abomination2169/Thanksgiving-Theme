@@ -1,0 +1,70 @@
+# CMake build output
+build/
+build-*/
+cmake-build-*/
+
+# Generated packages
+*.qmod
+package-*/
+
+# Local backups
+Backups/
+*.backup
+*.bak
+
+# Logs
+*.log
+logcat*.txt
+
+# IDE and editor files
+.vs/
+.vscode/
+.idea/
+*.user
+*.suo
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini
+# Restored QPM dependencies
+extern/
+
+# Generated build artifacts
+build*/
+cmake-build*/
+*.so
+*.a
+*.o
+
+# Packaging and local backups
+package-*/
+Backups/
+*.qmod
+*.log
+*.backup
+*.bak
+
+# Local release staging
+/Final-QMOD-Staging/
+package-*/
+*.qmod
+
+# Historical source backups
+*.backup*
+*.pre-*
+*.before-*
+*.gobble-backup
+
+# Local dependency and build directories
+Backups/
+build/
+build-*/
+cmake-build*/
+extern/
+
+# Duplicate root-level audio
+/Thanksgiving-Gobble-High-Note-Fade.ogg
+/Thanksgiving-Gobble-Quiet-Phrase.ogg
+
+*.gobble-*

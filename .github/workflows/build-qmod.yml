@@ -80,7 +80,7 @@ jobs:
 
       - name: Build and package QMOD
         run: |
-          qpm qmod zip --import mod.json --skip_build --include_dirs ./build ./extern/libs ./assets
+          qpm qmod zip --import mod.json --skip_build -i ./build -i ./extern/libs -i ./assets
           test -s Thanksgiving.qmod
           cp Thanksgiving.qmod Thanksgiving-Theme.qmod
 

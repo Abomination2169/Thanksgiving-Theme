@@ -6,12 +6,12 @@
 // Define a setter and getter function for a property that directly returns the value
 #define DEFINE_FIELD_SETGET_DIRECT(moduleType, moduleName, propertyType, propertyName) \
 propertyType Flair::ParticleController::moduleType::get_##propertyName(UnityEngine::ParticleSystem* particleSystem) { \
-    static auto GetterFunc = il2cpp_utils::resolve_icall<propertyType, UnityEngine::ParticleSystem::moduleType*>("UnityEngine.ParticleSystem/" #moduleType "::get_" #propertyName "_Injected"); \
+    static auto GetterFunc = i2c::resolve_icall<propertyType, UnityEngine::ParticleSystem::moduleType*>("UnityEngine.ParticleSystem/" #moduleType "::get_" #propertyName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     return GetterFunc(&moduleObj); \
 } \
 void Flair::ParticleController::moduleType::set_##propertyName(UnityEngine::ParticleSystem* particleSystem, propertyType value) { \
-    static auto SetterFunc = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType>("UnityEngine.ParticleSystem/" #moduleType "::set_" #propertyName "_Injected"); \
+    static auto SetterFunc = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType>("UnityEngine.ParticleSystem/" #moduleType "::set_" #propertyName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     SetterFunc(&moduleObj, value); \
 }
@@ -19,49 +19,49 @@ void Flair::ParticleController::moduleType::set_##propertyName(UnityEngine::Part
 // Define a setter and getter function for a property that will only return the value by passing in a reference
 #define DEFINE_FIELD_SETGET_BY_REF(moduleType, moduleName, propertyType, propertyName) \
 propertyType Flair::ParticleController::moduleType::get_##propertyName(UnityEngine::ParticleSystem *particleSystem) { \
-    static auto GetterFunc = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType*>("UnityEngine.ParticleSystem/" #moduleType "::get_" #propertyName "_Injected"); \
+    static auto GetterFunc = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType*>("UnityEngine.ParticleSystem/" #moduleType "::get_" #propertyName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     propertyType propertyObj; \
     GetterFunc(&moduleObj, &propertyObj); \
     return propertyObj; \
 } \
 void Flair::ParticleController::moduleType::set_##propertyName(UnityEngine::ParticleSystem *particleSystem, propertyType value) { \
-    static auto SetterFunc = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType*>("UnityEngine.ParticleSystem/" #moduleType "::set_" #propertyName "_Injected"); \
+    static auto SetterFunc = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, propertyType*>("UnityEngine.ParticleSystem/" #moduleType "::set_" #propertyName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     SetterFunc(&moduleObj, &value); \
 }
 
 #define DEFINE_VOID_1(moduleType, moduleName, funcName, para1Type, para1Name) \
 void Flair::ParticleController::moduleType::funcName(UnityEngine::ParticleSystem* particleSystem, para1Type para1Name) { \
-    static auto Func = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
+    static auto Func = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     Func(&moduleObj, para1Name); \
 }
 
 #define DEFINE_VOID_2(moduleType, moduleName, funcName, para1Type, para1Name, para2Type, para2Name) \
 void Flair::ParticleController::moduleType::funcName(UnityEngine::ParticleSystem* particleSystem, para1Type para1Name, para2Type para2Name) { \
-    static auto Func = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type, para2Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
+    static auto Func = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type, para2Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     Func(&moduleObj, para1Name, para2Name); \
 }
 
 #define DEFINE_VOID_4(moduleType, moduleName, funcName, para1Type, para1Name, para2Type, para2Name, para3Type, para3Name, para4Type, para4Name) \
 void Flair::ParticleController::moduleType::funcName(UnityEngine::ParticleSystem* particleSystem, para1Type para1Name, para2Type para2Name, para3Type para3Name, para4Type para4Name) { \
-    static auto Func = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type, para2Type, para3Type, para4Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
+    static auto Func = i2c::resolve_icall<void, UnityEngine::ParticleSystem::moduleType*, para1Type, para2Type, para3Type, para4Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     Func(&moduleObj, para1Name, para2Name, para3Name, para4Name); \
 }
 
 #define DEFINE_RETURN_0(returnType, moduleType, moduleName, funcName) \
 returnType Flair::ParticleController::moduleType::funcName(UnityEngine::ParticleSystem* particleSystem) { \
-    static auto Func = il2cpp_utils::resolve_icall<returnType, UnityEngine::ParticleSystem::moduleType*>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
+    static auto Func = i2c::resolve_icall<returnType, UnityEngine::ParticleSystem::moduleType*>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     return Func(&moduleObj); \
 }
 
 #define DEFINE_RETURN_1(returnType, moduleType, moduleName, funcName, para1Type, para1Name) \
 returnType Flair::ParticleController::moduleType::funcName(UnityEngine::ParticleSystem* particleSystem, para1Type para1Name) { \
-    static auto Func = il2cpp_utils::resolve_icall<returnType, UnityEngine::ParticleSystem::moduleType*, para1Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
+    static auto Func = i2c::resolve_icall<returnType, UnityEngine::ParticleSystem::moduleType*, para1Type>("UnityEngine.ParticleSystem/" #moduleType "::" #funcName "_Injected"); \
     UnityEngine::ParticleSystem::moduleType moduleObj = particleSystem->moduleName; \
     return Func(&moduleObj, para1Name); \
 }
@@ -119,14 +119,14 @@ DEFINE_FIELD_SETGET_DIRECT(EmissionModule, emission, float, rateOverTimeMultipli
 DEFINE_FIELD_SETGET_BY_REF(EmissionModule, emission, Flair::ParticleController::MinMaxCurve, rateOverDistance);
 DEFINE_FIELD_SETGET_DIRECT(EmissionModule, emission, float, rateOverDistanceMultiplier);
 Flair::ParticleController::Burst GetBurst(UnityEngine::ParticleSystem* particleSystem, int index) {
-    static auto Func = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::EmissionModule*, int, Flair::ParticleController::Burst*>("UnityEngine.ParticleSystem/EmissionModule::GetBurst_Injected");
+    static auto Func = i2c::resolve_icall<void, UnityEngine::ParticleSystem::EmissionModule*, int, Flair::ParticleController::Burst*>("UnityEngine.ParticleSystem/EmissionModule::GetBurst_Injected").value();
     UnityEngine::ParticleSystem::EmissionModule moduleObj = particleSystem->emission;
     Flair::ParticleController::Burst propertyObj;
     Func(&moduleObj, index, &propertyObj);
     return propertyObj;
 }
 void SetBurst(UnityEngine::ParticleSystem* particleSystem, int index, Flair::ParticleController::Burst burst) {
-    static auto Func = il2cpp_utils::resolve_icall<void, UnityEngine::ParticleSystem::EmissionModule*, int, Flair::ParticleController::Burst*>("UnityEngine.ParticleSystem/EmissionModule::SetBurst_Injected");
+    static auto Func = i2c::resolve_icall<void, UnityEngine::ParticleSystem::EmissionModule*, int, Flair::ParticleController::Burst*>("UnityEngine.ParticleSystem/EmissionModule::SetBurst_Injected").value();
     UnityEngine::ParticleSystem::EmissionModule moduleObj = particleSystem->emission;
     Func(&moduleObj, index, &burst);
 }

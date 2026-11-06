@@ -56,7 +56,7 @@ jobs:
 
           manifest = json.loads(Path("mod.json").read_text(encoding="utf-8"))
           for entry in manifest.get("fileCopies", []):
-              asset = Path(entry["name"])
+              asset = Path("assets") / Path(entry["name"]).name
               if not asset.is_file():
                   raise SystemExit(f"Missing fileCopies asset: {asset}")
           cover = manifest.get("coverImage")

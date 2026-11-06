@@ -1,57 +1,15 @@
-# Thanksgiving Theme
+#🦃 Thanksgiving Theme
 
-A Thanksgiving-themed main menu modification for Beat Saber on Meta Quest 3.
+Watch Thanksgiving Theme in action!
 
-## Features
+Thanksgiving Theme - Beat Saber
 
-- Warm autumn harvest-themed environment.
-- Custom Thanksgiving decorations.
-- Falling autumn leaves.
-- Retained pumpkin accent artwork.
-- Original Beat Saber menu music.
-- Random turkey gobble sound effects layered over the menu music.
-- Two turkey gobble variations with randomized playback.
+▶️ Watch on YouTube: [https://www.youtube.com/watch?v=LgSdA3DGreM](https://www.youtube.com/watch?v=t5VIwbuC9vc)
 
-## Compatibility
+Happy Thanksgiving!
 
-- Platform: Meta Quest
-- Game: Beat Saber
-- Tested game version: 1.40.8
-- Architecture: ARM64
-- Mod ID: thanksgiving
-- Release: v1.0.0
+Transform your Beat Saber menu into a spooky graveyard with falling autumn leaves. Based on the fantastic Christmas Mod by vcmikuu laynia. Free music provided by the brilliant Alex Morgan.
 
-## Audio
+Note: Development assisted with use of A.I. Please support talented artists and coders whenever possible.
 
-The mod preserves the original Beat Saber menu music.
-
-Turkey gobbles are played periodically:
-- First gobble: approximately 5–8 seconds after initialization.
-- Subsequent gobbles: approximately every 15–25 seconds.
-- Two different gobble recordings are selected randomly.
-
-## Installation
-
-1. Download `Thanksgiving-1.0.0.qmod` from the Releases section.
-2. Install using a compatible Quest mod installer.
-3. Enable the Thanksgiving mod.
-4. Launch Beat Saber.
-
-## Building from source
-
-The project uses CMake and the Android NDK.
-
-Build target:
-- Android ARM64
-- Android NDK 27.3.13750724
-- Beat Saber 1.40.8
-
-## Credits
-
-Thanksgiving Theme contributors.
-
-Special thanks to the Beat Saber modding community and the contributors whose work made this project possible.
-
-## Release
-
-Current version: **1.0.0**
+Compatible with: Beat Saber 1.40.8 (Quest)

@@ -10,34 +10,20 @@
     "packageVersion": "1.40.8_7379",
     "description": "Celebrate Thanksgiving with a golden autumn Beat Saber menu.",
     "dependencies": [
-        {
-            "id": "beatsaber-hook",
-            "version": "^6.4.2"
-        },
-        {
-            "id": "bsml",
-            "version": "^0.4.55"
-        },
-        {
-            "id": "custom-types",
-            "version": "^0.18.3"
-        },
-        {
-            "id": "paper2_scotland2",
-            "version": "^4.6.4"
-        }
+        {"id": "beatsaber-hook", "version": "^6.4.2"},
+        {"id": "bsml", "version": "^0.4.55"},
+        {"id": "custom-types", "version": "^0.18.3"},
+        {"id": "paper2_scotland2", "version": "^4.6.4"}
     ],
-    "modFiles": [
-        "libthanksgiving.so"
-    ],
+    "modFiles": ["libthanksgiving.so"],
     "libraryFiles": [],
     "fileCopies": [
         {
-            "name": "assets/Thanksgiving-Gobble-High-Note-Fade.ogg",
+            "name": "Thanksgiving-Gobble-High-Note-Fade.ogg",
             "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-High-Note-Fade.ogg"
         },
         {
-            "name": "assets/Thanksgiving-Gobble-Quiet-Phrase.ogg",
+            "name": "Thanksgiving-Gobble-Quiet-Phrase.ogg",
             "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-Quiet-Phrase.ogg"
         }
     ]

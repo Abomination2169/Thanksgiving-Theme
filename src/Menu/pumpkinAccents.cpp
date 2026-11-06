@@ -304,7 +304,7 @@ namespace Thanksgiving::pumpkinAccents {
                         extraPrefab.ptr(), root, false);
 
                     if (extraInstance) {
-                        auto* extraObject = static_cast<UnityEngine::GameObject*>(extraInstance);
+                        auto extraObject = extraInstance.try_cast<UnityEngine::GameObject>();
 
                         if (extraObject) {
                             auto extraTransform = extraObject->get_transform();
@@ -366,7 +366,7 @@ namespace Thanksgiving::pumpkinAccents {
                     continue;
                 }
 
-                auto* crateObject = static_cast<UnityEngine::GameObject*>(crateInstance);
+                auto crateObject = crateInstance.try_cast<UnityEngine::GameObject>();
 
                 if (!crateObject) continue;
 
@@ -437,7 +437,7 @@ namespace Thanksgiving::pumpkinAccents {
                     continue;
                 }
 
-                auto* cornObject = static_cast<UnityEngine::GameObject*>(cornInstance);
+                auto cornObject = cornInstance.try_cast<UnityEngine::GameObject>();
 
                 if (!cornObject) continue;
 
@@ -517,7 +517,7 @@ namespace Thanksgiving::pumpkinAccents {
                         if (instance) {
                             INFO("[Thanksgiving v1.4] Prefab instantiated successfully at position {}.", i + 1);
 
-                            auto* instanceObject = static_cast<UnityEngine::GameObject*>(instance);
+                            auto instanceObject = instance.try_cast<UnityEngine::GameObject>();
 
                             if (!instanceObject) {
                                 WARNING("[Thanksgiving v1.4 DIAG] Position {}: instance is not a GameObject.", i + 1);

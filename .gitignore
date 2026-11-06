@@ -1,0 +1,54 @@
+# CMake and Ninja build output
+/build/
+/build-*/
+/cmake-build-*/
+/CMakeFiles/
+/CMakeCache.txt
+/compile_commands.json
+/build.ninja
+/.ninja_deps
+/.ninja_log
+
+# QPM-generated dependencies and local toolchain configuration
+/extern/
+/shared/
+/extern.cmake
+/qpm_defines.cmake
+/ndkpath.txt
+
+# Compiled libraries, objects, and release packages
+*.qmod
+*.so
+*.so.dbg
+*.a
+*.o
+*.obj
+*.d
+*.dll
+*.dylib
+*.pdb
+
+# Local packaging, backups, and staging
+/Backups/
+/package-*/
+/Final-QMOD-Staging/
+*.backup*
+*.bak
+*.before-*
+*.pre-*
+*.gobble-backup
+
+# Logs and temporary files
+*.log
+*.tmp
+logcat*.txt
+
+# IDE and OS files
+/.vs/
+/.vscode/
+/.idea/
+*.user
+*.suo
+.DS_Store
+Thumbs.db
+desktop.ini

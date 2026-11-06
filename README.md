@@ -2,7 +2,7 @@
 
 Watch Thanksgiving Theme in action!
 
-[![Thanksgiving Theme — Beat Saber](Source/cover.png)](https://www.youtube.com/watch?v=t5VIwbuC9vc)
+[![Thanksgiving Theme — Beat Saber](Thanksgiving-Banner.png)](https://www.youtube.com/watch?v=t5VIwbuC9vc)
 
 ▶️ **Watch on YouTube:** https://www.youtube.com/watch?v=t5VIwbuC9vc
 

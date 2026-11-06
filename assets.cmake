@@ -11,41 +11,7 @@ set(ASSET_HEADER_PATH "${CMAKE_CURRENT_SOURCE_DIR}/include/assets.hpp")
 
 # Define a macro which we will use for defining the symbols to access our asset files below
 set(ASSET_HEADER_DATA
-    "#pragma once
-
-#include <string_view>
-
-#include \"beatsaber-hook/shared/utils/typedefs.h\"
-
-struct IncludedAsset {
-
-    IncludedAsset(uint8_t* start, uint8_t* end) : array(reinterpret_cast<Array<uint8_t>*>(start)) {
-        array->klass = nullptr;
-        array->monitor = nullptr;
-        array->bounds = nullptr;
-        array->max_length = end - start - 32;
-        *(end - 1) = '\\0';
-    }
-
-    operator ArrayW<uint8_t>() const {
-        init();
-        return array;
-    }
-
-    operator std::string_view() const { return {reinterpret_cast<char*>(array->_values), array->get_Length()}; }
-
-    operator std::span<uint8_t>() const { return {array->_values, array->get_Length()}; }
-
-    void init() const {
-        if (!array->klass)
-            array->klass = classof(Array<uint8_t>*);
-    }
-
-   private:
-    Array<uint8_t>* array;
-};
-
-#define DECLARE_FILE(name)                       \\
+    "#pragma once\n\n#include <algorithm>\n#include <cstdint>\n#include <span>\n#include <string_view>\n\n#include \"beatsaber-hook/shared/arrayw.hpp\"\n\nstruct IncludedAsset {\n    IncludedAsset(uint8_t* start, uint8_t* end) : data(start + 32), length(static_cast<size_t>(end - start - 33)) {}\n\n    operator ArrayW<uint8_t>() const {\n        if (!array) {\n            array = ArrayW<uint8_t>::New(static_cast<il2cpp_array_size_t>(length));\n            std::copy(data, data + length, array.begin());\n        }\n        return array;\n    }\n\n    operator std::string_view() const {\n        return {reinterpret_cast<char*>(data), length};\n    }\n\n    operator std::span<uint8_t>() const {\n        return {data, length};\n    }\n\n   private:\n    uint8_t* data;\n    size_t length;\n    mutable ArrayW<uint8_t> array;\n};\n\n#define DECLARE_FILE(name)                       \\
     extern \"C\" uint8_t _binary_##name##_start[]; \\
     extern \"C\" uint8_t _binary_##name##_end[];   \\
     const IncludedAsset name {_binary_##name##_start, _binary_##name##_end};

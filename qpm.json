@@ -23,7 +23,7 @@
   "dependencies": [
     {
       "id": "config-utils",
-      "versionRange": "^2.0.3",
+      "versionRange": "^3.0.0",
       "additionalData": {}
     },
     {

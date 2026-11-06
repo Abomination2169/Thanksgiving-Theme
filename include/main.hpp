@@ -10,6 +10,9 @@
 #include "config-utils/shared/config-utils.hpp"
 #include "beatsaber-hook/shared/hooking.hpp"
 #include "beatsaber-hook/shared/api.hpp"
+#include "beatsaber-hook/shared/arrayw.hpp"
+#include "beatsaber-hook/shared/safeptr.hpp"
+#include "beatsaber-hook/shared/stringw.hpp"
 
 
 #include "_config.hpp"

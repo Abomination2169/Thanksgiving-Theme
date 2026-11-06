@@ -18,7 +18,8 @@
       "ndk": "^27.3.13750724",
       "qmodIncludeDirs": [
         "./build",
-        "./extern/libs"
+        "./extern/libs",
+        "./assets"
       ],
       "qmodIncludeFiles": [],
       "qmodOutput": "./Thanksgiving.qmod"

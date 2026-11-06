@@ -18,7 +18,8 @@ permissions:
 jobs:
   build:
     name: Build and validate Quest package
-    runs-on: ubuntu-22.04
+    # QPM CLI v1.5.12 requires GLIBC 2.38+; Ubuntu 24.04 provides GLIBC 2.39.
+    runs-on: ubuntu-24.04
     steps:
       - name: Check out source
         uses: actions/checkout@v4
@@ -83,10 +84,9 @@ jobs:
               if "mod.json" not in names:
                   raise SystemExit("QMOD is missing mod.json")
               manifest = json.loads(archive.read("mod.json"))
-              for field in ("coverImage",):
-                  value = manifest.get(field)
-                  if value and value not in names:
-                      raise SystemExit(f"QMOD is missing {field}: {value}")
+              cover = manifest.get("coverImage")
+              if cover and cover not in names:
+                  raise SystemExit(f"QMOD is missing coverImage: {cover}")
               for entry in manifest.get("fileCopies", []):
                   if entry["name"] not in names:
                       raise SystemExit(f"QMOD is missing fileCopies entry: {entry['name']}")

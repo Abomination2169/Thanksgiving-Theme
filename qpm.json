@@ -1,57 +1,62 @@
 {
-    "sharedDir": "shared",
-    "dependenciesDir": "extern",
-    "version": "0.1.0",
-    "info": {
-        "name": "Thanksgiving",
-        "id": "thanksgiving",
-        "version": "1.0.0",
-        "url": null,
-        "additionalData": {
-            "overrideSoName": "libthanksgiving.so",
-            "cmake": true
-        }
+  "sharedDir": "shared",
+  "dependenciesDir": "extern",
+  "version": "0.1.0",
+  "info": {
+    "name": "Thanksgiving",
+    "id": "thanksgiving",
+    "version": "1.1.0",
+    "url": null,
+    "additionalData": {
+      "overrideSoName": "libthanksgiving.so",
+      "cmake": true
+    }
+  },
+  "workspace": {
+    "ndk": "^29.0.14206865",
+    "qmodIncludeDirs": [
+      "./build",
+      "./extern/libs"
+    ],
+    "qmodOutput": "./Thanksgiving.qmod"
+  },
+  "dependencies": [
+    {
+      "id": "config-utils",
+      "versionRange": "^2.0.3",
+      "additionalData": {}
     },
-    "workspace": {
-        "ndk": "^27.3.13750724",
-        "qmodIncludeDirs": [
-            "./build",
-            "./extern/libs"
-        ],
-        "qmodOutput": "./Thanksgiving.qmod"
+    {
+      "id": "scotland2",
+      "versionRange": "^0.1.7",
+      "additionalData": {
+        "includeQmod": false
+      }
     },
-    "dependencies": [
-        {
-            "id": "config-utils",
-            "versionRange": "^2.0.3",
-            "additionalData": {}
-        },
-        {
-            "id": "scotland2",
-            "versionRange": "^0.1.6",
-            "additionalData": {
-                "includeQmod": false
-            }
-        },
-        {
-            "id": "paper2_scotland2",
-            "versionRange": "^4.6.4",
-            "additionalData": {}
-        },
-        {
-            "id": "beatsaber-hook",
-            "versionRange": "^6.4.2",
-            "additionalData": {}
-        },
-        {
-            "id": "bsml",
-            "versionRange": "^0.4.55",
-            "additionalData": {}
-        },
-        {
-            "id": "custom-types",
-            "versionRange": "^0.18.3",
-            "additionalData": {}
-        }
-    ]
+    {
+      "id": "paper2_scotland2",
+      "versionRange": "^4.8.0",
+      "additionalData": {}
+    },
+    {
+      "id": "beatsaber-hook",
+      "versionRange": "^9.3.0",
+      "additionalData": {}
+    },
+    {
+      "id": "bsml",
+      "versionRange": "^0.6.5",
+      "additionalData": {}
+    },
+    {
+      "id": "custom-types",
+      "versionRange": "^0.21.2",
+      "additionalData": {}
+    },
+    {
+      "id": "bs-cordl",
+      "versionRange": "^4503.0.0",
+      "additionalData": {}
+    }
+  ]
 }

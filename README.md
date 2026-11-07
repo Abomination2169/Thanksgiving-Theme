@@ -18,6 +18,8 @@ Note: Development assisted with use of A.I. Please support talented artists and 
 
 ## License and source code
 
+See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for detailed attribution, audio licensing, and artwork provenance.
+
 This project is a modified derivative of [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), created by **CatsaCode** and **laynia (vcmikuu)**. It contains modified Christmas Theme code alongside new seasonal modifications. The original developers have [authorized reuse under GNU GPL version 3 with proper credit](https://github.com/vcmikuu/ChristmasTheme/issues/1#issuecomment-6711835142).
 
 The combined mod's code is distributed under the **GNU General Public License, version 3 (GPL-3.0-only)**. See the [LICENSE](LICENSE) file for the complete terms. You may study, modify, and redistribute the covered code under GPLv3, subject to its requirements. This is not an official release by the Christmas Theme developers.

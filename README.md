@@ -20,7 +20,7 @@ Note: Development assisted with use of A.I. Please support talented artists and 
 
 See [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) for detailed attribution, audio licensing, and artwork provenance.
 
-This project is a modified derivative of [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), created by **CatsaCode** and **laynia (vcmikuu)**. It contains modified Christmas Theme code alongside new seasonal modifications. The original developers have [authorized reuse under GNU GPL version 3 with proper credit](https://github.com/vcmikuu/ChristmasTheme/issues/1#issuecomment-6711835142).
+This project is a modified derivative of [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), created by **Vcmikuu** and **CatsaCode**. It contains modified Christmas Theme code alongside new seasonal modifications. The original developers have [authorized reuse under GNU GPL version 3 with proper credit](https://github.com/vcmikuu/ChristmasTheme/issues/1#issuecomment-6711835142).
 
 The combined mod's code is distributed under the **GNU General Public License, version 3 (GPL-3.0-only)**. See the [LICENSE](LICENSE) file for the complete terms. You may study, modify, and redistribute the covered code under GPLv3, subject to its requirements. This is not an official release by the Christmas Theme developers.
 
@@ -28,7 +28,7 @@ The combined mod's code is distributed under the **GNU General Public License, v
 
 ## Attribution and modifications
 
-- **CatsaCode and laynia (vcmikuu):** Creators of the original [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), on whose source this mod is based. Thank you both for your work and permission.
+- **Vcmikuu and CatsaCode:** Creators of the original [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), on whose source this mod is based. Thank you both for your work and permission.
 - **Abomination2169:** Seasonal adaptation, code and asset changes, maintenance and distribution of Thanksgiving Theme.
 - **Quest Mod Template:** By [Lauriethefish, danrouse and Bobby Shmurner](https://github.com/Lauriethefish/quest-mod-template), originally provided under the Unlicense. Credit also goes to the dependency/library authors acknowledged in [Christmas Theme's README](https://github.com/vcmikuu/ChristmasTheme#credits).
 

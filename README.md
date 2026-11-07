@@ -28,7 +28,7 @@ The combined mod's code is distributed under the **GNU General Public License, v
 
 ## Attribution and modifications
 
-- **Vcmikuu and CatsaCode:** Creators of the original [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), on whose source this mod is based. Thank you both for your work and permission.
+- **Vcmikuu and CatsaCode:** Creators of the original [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), on whose source this mod is based. Thank you both for the inspiration and permission this work is based on.
 - **Abomination2169:** Seasonal adaptation, code and asset changes, maintenance and distribution of Thanksgiving Theme.
 - **Quest Mod Template:** By [Lauriethefish, danrouse and Bobby Shmurner](https://github.com/Lauriethefish/quest-mod-template), originally provided under the Unlicense. Credit also goes to the dependency/library authors acknowledged in [Christmas Theme's README](https://github.com/vcmikuu/ChristmasTheme#credits).
 

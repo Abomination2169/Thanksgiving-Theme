@@ -10,7 +10,7 @@ Happy Thanksgiving!
 
 Transform your Beat Saber menu with golden harvest lighting, seasonal decorations, and falling leaves!
 
-Based on the fantastic Christmas Mod by vcmikuu laynia.
+Based on the fantastic Christmas Mod by Vcmikuu and CatsaCode.
 
 Note: Development assisted with use of A.I. Please support talented artists and coders whenever possible.
 

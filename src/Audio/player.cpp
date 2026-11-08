@@ -2,132 +2,159 @@
 #include "main.hpp"
 #include "logging.hpp"
 #include "c.hpp"
+#include "custom-types/shared/macros.hpp"
 #include "custom-types/shared/delegate.hpp"
 #include "System/Threading/Tasks/Tasks.hpp"
 #include "GlobalNamespace/MediaAsyncLoader.hpp"
-
-
-
-
-
-#include <string>
-
-// Thanksgiving turkey gobble scheduler.
-// This AudioSource is separate from the menu music source.
-
 #include "UnityEngine/AudioSource.hpp"
 #include "UnityEngine/AudioClip.hpp"
 #include "UnityEngine/Time.hpp"
+#include "GlobalNamespace/MainMenuViewController.hpp"
+#include "UnityEngine/MonoBehaviour.hpp"
+#include "UnityEngine/GameObject.hpp"
+#include "UnityEngine/Object.hpp"
+#include "UnityEngine/SceneManagement/SceneManager.hpp"
+#include "UnityEngine/SceneManagement/Scene.hpp"
+#include "beatsaber-hook/shared/utils/il2cpp-utils.hpp"
+#include <functional>
+#include <mutex>
+#include <queue>
 #include <cstdlib>
+#include <string>
 
-static const std::string highGobblePath =
-    "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-High-Note-Fade.ogg";
+DECLARE_CLASS_CODEGEN(Thanksgiving, GobbleMenuTicker, UnityEngine::MonoBehaviour)
+{
+    DECLARE_INSTANCE_METHOD(void, Update);
+    DECLARE_INSTANCE_METHOD(void, OnDisable);
+    DECLARE_INSTANCE_METHOD(void, OnDestroy);
+};
+DEFINE_TYPE(Thanksgiving, GobbleMenuTicker);
 
-static const std::string quietGobblePath =
-    "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-Quiet-Phrase.ogg";
+namespace {
+constexpr const char* kPath = "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-Quiet-Phrase.ogg";
+std::mutex mutex;
+std::queue<std::function<void()>> completions;
+UnityW<UnityEngine::AudioSource> source;
+UnityW<UnityEngine::AudioClip> clip;
+UnityW<Thanksgiving::GobbleMenuTicker> ticker;
+bool active = false;
+bool loading = false;
+float nextTime = 0.0f;
 
-static UnityW<UnityEngine::AudioClip> highGobbleClip;
-static UnityW<UnityEngine::AudioClip> quietGobbleClip;
-
-static UnityEngine::AudioSource* gobbleSource = nullptr;
-static bool gobbleLoadingStarted = false;
-static float nextGobbleTime = 0.0f;
-
-static void LoadGobbleClip(
-    const std::string& path,
-    UnityW<UnityEngine::AudioClip>* destination
-) {
-    auto loader = GlobalNamespace::MediaAsyncLoader::New_ctor();
-    auto task = loader->LoadAudioClipFromFilePathAsync(path);
-
-    if (!task) {
-        PaperLogger.error("Turkey gobble audio task creation failed.");
+void QueueLoad() {
+    if (loading || clip) return;
+    if (!fileexists(kPath)) {
+        PaperLogger.error("v1.0.5 gobble file missing: {}", kPath);
         return;
     }
-
-    task->GetAwaiter().OnCompleted(
-        custom_types::MakeDelegate<System::Action*>(
-            std::function([task, destination]() {
-                auto clip = task->get_Result();
-
-                if (clip) {
-                    *destination = clip;
-                    PaperLogger.info("Turkey gobble audio loaded.");
-                } else {
-                    PaperLogger.error("Turkey gobble audio returned empty.");
-                }
-            })
-        )
-    );
+    loading = true;
+    auto loader = GlobalNamespace::MediaAsyncLoader::New_ctor();
+    auto task = loader->LoadAudioClipFromFilePathAsync(std::string(kPath));
+    if (!task) { loading = false; return; }
+    task->GetAwaiter().OnCompleted(custom_types::MakeDelegate<System::Action*>(
+        std::function([task]() {
+            std::lock_guard<std::mutex> guard(mutex);
+            completions.emplace([task]() {
+                auto result = task->get_Result();
+                if (result) { clip = result; PaperLogger.info("v1.0.5 gobble preloaded"); }
+                else PaperLogger.error("v1.0.5 gobble load returned null");
+                loading = false;
+            });
+        })
+    ));
+}
+void Stop() {
+    active = false;
+    if (source && source->get_isPlaying()) source->Stop();
+    nextTime = 0.0f;
+}
 }
 
-void InitializeTurkeyGobbles(
-    GlobalNamespace::SongPreviewPlayer* player
-) {
-    if (!player) return;
+void Thanksgiving::Audio::EnterMenu(GlobalNamespace::MainMenuViewController* menu) {
+    if (!menu) return;
 
-    if (!gobbleSource) {
-        auto gameObject = player->get_gameObject();
-        if (!gameObject) return;
-
-        gobbleSource =
-            gameObject->AddComponent<UnityEngine::AudioSource*>();
-
-        if (!gobbleSource) {
-            PaperLogger.error("Could not create turkey AudioSource.");
+    // The scheduler and audio source must not live on the menu GameObject:
+    // Beat Saber can disable that object during gameplay.
+    if (!ticker || !ticker->get_gameObject()) {
+        auto controller = UnityEngine::GameObject::New_ctor(il2cpp_utils::newcsstr("ThanksgivingGobbleController"));
+        if (!controller) {
+            PaperLogger.error("Gobble controller creation failed");
             return;
         }
-
-        gobbleSource->set_playOnAwake(false);
-        gobbleSource->set_loop(false);
-        gobbleSource->set_spatialBlend(0.0f);
-        gobbleSource->set_volume(1.0f);
-
-        PaperLogger.info("Turkey gobble AudioSource initialized.");
+        UnityEngine::Object::DontDestroyOnLoad(controller);
+        ticker = controller->AddComponent<Thanksgiving::GobbleMenuTicker*>();
+        source = controller->AddComponent<UnityEngine::AudioSource*>();
+        if (!ticker || !source) {
+            PaperLogger.error("Gobble components creation failed");
+            return;
+        }
+        source->set_playOnAwake(false);
+        source->set_loop(false);
+        source->set_spatialBlend(0.0f);
+        source->set_volume(0.22f);
     }
 
-    if (gobbleLoadingStarted) return;
-
-    gobbleLoadingStarted = true;
-
-    if (fileexists(highGobblePath)) {
-        LoadGobbleClip(highGobblePath, &highGobbleClip);
-    } else {
-        PaperLogger.error("High-note turkey gobble file missing.");
-    }
-
-    if (fileexists(quietGobblePath)) {
-        LoadGobbleClip(quietGobblePath, &quietGobbleClip);
-    } else {
-        PaperLogger.error("Quiet turkey gobble file missing.");
-    }
+    // DidActivate is the authoritative rearm event, including returns from songs.
+    active = true;
+    nextTime = UnityEngine::Time::get_unscaledTime() + 5.0f;
+    QueueLoad();
 }
 
-void UpdateTurkeyGobbles() {
+void Thanksgiving::Audio::EnterSoloSelection() {
+    // Controller was initialized by the main menu. Do not create one on a
+    // transient level-selection GameObject.
+    if (!ticker || !source) return;
     if (!getModConfig().EnableTurkeyGobbles.GetValue()) return;
+    // Avoid restarting the timer when moving between menu screens while
+    // gobbles are already active. Returning from GameCore sets active=false.
+    if (active) return;
+    active = true;
+    nextTime = UnityEngine::Time::get_unscaledTime() + 5.0f;
+    QueueLoad();
+}
 
-    if (!gobbleSource || !highGobbleClip || !quietGobbleClip) return;
+void Thanksgiving::Audio::ExitMenu() { Stop(); }
 
-    const float now = UnityEngine::Time::get_unscaledTime();
+void Thanksgiving::Audio::Tick() {
+    std::queue<std::function<void()>> ready;
+    {
+        std::lock_guard<std::mutex> guard(mutex);
+        std::swap(ready, completions);
+    }
+    while (!ready.empty()) { ready.front()(); ready.pop(); }
 
-    if (nextGobbleTime <= 0.0f) {
-        nextGobbleTime =
-            now + 5.0f + static_cast<float>(std::rand() % 4);
+    if (!ticker || !source) return;
+    if (!getModConfig().EnableTurkeyGobbles.GetValue()) { Stop(); return; }
+
+    // GameCore is never allowed to play turkey audio. The persistent ticker
+    // remains alive so asynchronous clip completions can still be drained.
+    const auto scene = UnityEngine::SceneManagement::SceneManager::GetActiveScene();
+    if (const_cast<UnityEngine::SceneManagement::Scene&>(scene).get_name() == "GameCore") {
+        if (active) Stop();
         return;
     }
+    if (!active) return;
+    if (!clip) { QueueLoad(); return; }
 
-    if (now < nextGobbleTime) return;
-
-    UnityEngine::AudioClip* selectedClip =
-        (std::rand() % 2 == 0)
-        ? highGobbleClip.ptr()
-        : quietGobbleClip.ptr();
-
-    if (selectedClip) {
-        gobbleSource->PlayOneShot(selectedClip, 0.22f);
-        PaperLogger.info("Turkey gobble played.");
+    const float now = UnityEngine::Time::get_unscaledTime();
+    if (now < nextTime) return;
+    if (!source->get_isPlaying()) {
+        source->set_clip(clip.ptr());
+        source->Play();
+        PaperLogger.info("v1.0.5 persistent gobble played");
     }
-
-    nextGobbleTime =
-        now + 15.0f + static_cast<float>(std::rand() % 11);
+    nextTime = now + 15.0f + float(std::rand() % 11);
 }
+
+void Thanksgiving::GobbleMenuTicker::Update() { Thanksgiving::Audio::Tick(); }
+void Thanksgiving::GobbleMenuTicker::OnDisable() { Thanksgiving::Audio::ExitMenu(); }
+void Thanksgiving::GobbleMenuTicker::OnDestroy() {
+    Thanksgiving::Audio::ExitMenu();
+    ticker = nullptr;
+    source = nullptr;
+}
+
+// Legacy hooks remain disabled. Their entry points are retained only for linking.
+void InitializeTurkeyGobbles(GlobalNamespace::SongPreviewPlayer*) {}
+void DisableTurkeyGobbles(GlobalNamespace::SongPreviewPlayer*) {}
+void UpdateTurkeyGobbles(GlobalNamespace::SongPreviewPlayer*) {}

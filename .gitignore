@@ -1,54 +1,70 @@
-# CMake and Ninja build output
-/build/
-/build-*/
-/cmake-build-*/
-/CMakeFiles/
-/CMakeCache.txt
-/compile_commands.json
-/build.ninja
-/.ninja_deps
-/.ninja_log
+# CMake build output
+build/
+build-*/
+cmake-build-*/
 
-# QPM-generated dependencies and local toolchain configuration
-/extern/
-/shared/
-/extern.cmake
-/qpm_defines.cmake
-/ndkpath.txt
-
-# Compiled libraries, objects, and release packages
+# Generated packages
 *.qmod
-*.so
-*.so.dbg
-*.a
-*.o
-*.obj
-*.d
-*.dll
-*.dylib
-*.pdb
+package-*/
 
-# Local packaging, backups, and staging
-/Backups/
-/package-*/
-/Final-QMOD-Staging/
-*.backup*
+# Local backups
+Backups/
+*.backup
 *.bak
-*.before-*
-*.pre-*
-*.gobble-backup
 
-# Logs and temporary files
+# Logs
 *.log
-*.tmp
 logcat*.txt
 
-# IDE and OS files
-/.vs/
-/.vscode/
-/.idea/
+# IDE and editor files
+.vs/
+.vscode/
+.idea/
 *.user
 *.suo
-.DS_Store
+
+# OS files
 Thumbs.db
+.DS_Store
 desktop.ini
+# Restored QPM dependencies
+extern/
+
+# Generated build artifacts
+build*/
+cmake-build*/
+*.so
+*.a
+*.o
+
+# Packaging and local backups
+package-*/
+Backups/
+*.qmod
+*.log
+*.backup
+*.bak
+
+# Local release staging
+/Final-QMOD-Staging/
+package-*/
+*.qmod
+
+# Historical source backups
+*.backup*
+*.pre-*
+*.before-*
+*.gobble-backup
+
+# Local dependency and build directories
+Backups/
+build/
+build-*/
+cmake-build*/
+extern/
+
+# Duplicate root-level audio
+/Thanksgiving-Gobble-High-Note-Fade.ogg
+/Thanksgiving-Gobble-Quiet-Phrase.ogg
+
+*.gobble-*

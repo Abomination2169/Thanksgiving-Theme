@@ -9,6 +9,7 @@
 #include "GlobalNamespace/MultiplayerModeSelectionFlowCoordinator.hpp"
 #include "GlobalNamespace/LightWithIdManager.hpp"
 #include "GlobalNamespace/MainMenuViewController.hpp"
+#include "GlobalNamespace/LevelSelectionFlowCoordinator.hpp"
 #include "GlobalNamespace/MediaAsyncLoader.hpp"
 
 #include "logging.hpp"
@@ -16,6 +17,7 @@
 #include "Menu/ObjectInstances.hpp"
 
 #include "Audio/player.hpp"
+#include "custom-types/shared/register.hpp"
 
 #include "GlobalNamespace/SongPreviewPlayer.hpp"
 #include "UnityEngine/AudioSource.hpp"
@@ -60,7 +62,7 @@ static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
 //
 //    if (!MenuMusic::menuMusicLoader.get_OriginalClip()) {
 //        PaperLogger.info("Loading custom menu music...");
-//        MenuMusic::menuMusicLoader.LoadCustomMusic();  // Keine Coroutine mehr nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶tig
+//        MenuMusic::menuMusicLoader.LoadCustomMusic();  // Keine Coroutine mehr nÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¶tig
 //    }
 //
 //    self->_defaultAudioClip = MenuMusic::menuMusicLoader.get_OriginalClip();
@@ -82,9 +84,14 @@ MAKE_HOOK_MATCH(SongPreviewPlayer_CrossfadeTo, static_cast<void(SongPreviewPlaye
     SongPreviewPlayer_CrossfadeTo(self, audioClip, musicVolume, startTime, duration, isDefault, onFadeOutCallback);
 }
 
+MAKE_HOOK_MATCH(SongPreviewPlayer_OnDisable, &SongPreviewPlayer::OnDisable, void, SongPreviewPlayer* self) {
+    DisableTurkeyGobbles(self);
+    SongPreviewPlayer_OnDisable(self);
+}
+
 MAKE_HOOK_MATCH(SongPreviewPlayer_Update, &SongPreviewPlayer::Update, void, SongPreviewPlayer* self) {
     SongPreviewPlayer_Update(self);
-    UpdateTurkeyGobbles();
+    UpdateTurkeyGobbles(self);
 }
 // float BytesToFloat(uint8_t byte0, uint8_t byte1, uint8_t byte2, uint8_t byte3) {
 //     float out = 0;
@@ -190,8 +197,15 @@ MAKE_HOOK_MATCH(ThanksgivingSteadyEInit, &GlobalNamespace::FlickeringNeonSign::S
 }
 
 
+// Re-arm turkey audio when Solo song selection becomes active.
+MAKE_HOOK_MATCH(ThanksgivingLevelSelectionDidActivate, &GlobalNamespace::LevelSelectionFlowCoordinator::DidActivate, void, GlobalNamespace::LevelSelectionFlowCoordinator* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
+    ThanksgivingLevelSelectionDidActivate(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    Thanksgiving::Audio::EnterSoloSelection();
+}
+
 MAKE_HOOK_MATCH(AutumnLeavesInit, &GlobalNamespace::MainMenuViewController::DidActivate, void, GlobalNamespace::MainMenuViewController* self, bool firstActivation, bool addedToHierarchy, bool screenSystemEnabling) {
     AutumnLeavesInit(self, firstActivation, addedToHierarchy, screenSystemEnabling);
+    Thanksgiving::Audio::EnterMenu(self);
 
     if(!firstActivation) return;
 
@@ -218,6 +232,7 @@ MOD_EXTERN_FUNC void setup(CModInfo *info) noexcept {
 // Called later on in the game loading - a good time to install function hooks
 MOD_EXTERN_FUNC void late_load() noexcept {
     il2cpp_functions::Init();
+    custom_types::Register::AutoRegister();
 
 
     INFO("Installing hooks...");
@@ -226,10 +241,16 @@ MOD_EXTERN_FUNC void late_load() noexcept {
     INSTALL_HOOK(PaperLogger, OverrideEnvironmentColors);
     INSTALL_HOOK(PaperLogger, ThanksgivingSteadyEInit);
     INSTALL_HOOK(PaperLogger, AutumnLeavesInit);
+    INSTALL_HOOK(PaperLogger, ThanksgivingLevelSelectionDidActivate);
 
-    INSTALL_HOOK(PaperLogger, SongPreviewPlayer_OnEnable);
-    INSTALL_HOOK(PaperLogger, SongPreviewPlayer_CrossfadeTo);
-    INSTALL_HOOK(PaperLogger, SongPreviewPlayer_Update);
+    // v1.0.4 stability test: audio lifecycle hook disabled
+    // INSTALL_HOOK(PaperLogger, SongPreviewPlayer_OnEnable);
+    // v1.0.4 stability test: audio lifecycle hook disabled
+    // INSTALL_HOOK(PaperLogger, SongPreviewPlayer_CrossfadeTo);
+    // v1.0.4 stability test: audio lifecycle hook disabled
+    // INSTALL_HOOK(PaperLogger, SongPreviewPlayer_Update);
+    // v1.0.4 stability test: audio lifecycle hook disabled
+    // INSTALL_HOOK(PaperLogger, SongPreviewPlayer_OnDisable);
     //INSTALL_HOOK(PaperLogger, GameServerLobbyFlowCoordinator_DidActivate);
     //INSTALL_HOOK(PaperLogger, GameServerLobbyFlowCoordinator_DidDeactivate);
     //INSTALL_HOOK(PaperLogger, MultiplayerModeSelectionFlowCoordinator_DidActivate);

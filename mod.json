@@ -1,30 +1,40 @@
 {
-    "$schema": "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/main/QuestPatcher.QMod/Resources/qmod.schema.json",
-    "_QPVersion": "0.1.1",
-    "name": "Thanksgiving",
-    "id": "thanksgiving",
-    "coverImage": "cover.png",
-    "author": "Thanksgiving Theme contributors",
-    "version": "1.0.0",
-    "packageId": "com.beatgames.beatsaber",
-    "packageVersion": "1.40.8_7379",
-    "description": "Celebrate Thanksgiving with a golden autumn Beat Saber menu.",
-    "dependencies": [
-        {"id": "beatsaber-hook", "version": "^6.4.2"},
-        {"id": "bsml", "version": "^0.4.55"},
-        {"id": "custom-types", "version": "^0.18.3"},
-        {"id": "paper2_scotland2", "version": "^4.6.4"}
-    ],
-    "modFiles": ["libthanksgiving.so"],
-    "libraryFiles": [],
-    "fileCopies": [
-        {
-            "name": "Thanksgiving-Gobble-High-Note-Fade.ogg",
-            "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-High-Note-Fade.ogg"
-        },
-        {
-            "name": "Thanksgiving-Gobble-Quiet-Phrase.ogg",
-            "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-Quiet-Phrase.ogg"
-        }
-    ]
+  "$schema": "https://raw.githubusercontent.com/Lauriethefish/QuestPatcher.QMod/main/QuestPatcher.QMod/Resources/qmod.schema.json",
+  "_QPVersion": "0.1.1",
+  "name": "Thanksgiving",
+  "id": "thanksgiving",
+  "coverImage": "cover.png",
+  "author": "Thanksgiving Theme contributors",
+  "version": "1.0.1",
+  "packageId": "com.beatgames.beatsaber",
+  "packageVersion": "1.40.8_7379",
+  "description": "Celebrate Thanksgiving with a golden autumn Beat Saber menu.",
+  "dependencies": [
+    {
+      "id": "beatsaber-hook",
+      "version": "^6.4.2"
+    },
+    {
+      "id": "bsml",
+      "version": "^0.4.55"
+    },
+    {
+      "id": "custom-types",
+      "version": "^0.18.3"
+    },
+    {
+      "id": "paper2_scotland2",
+      "version": "^4.6.4"
+    }
+  ],
+  "modFiles": [
+    "libthanksgiving.so"
+  ],
+  "libraryFiles": [],
+  "fileCopies": [
+    {
+      "destination": "/sdcard/ModData/com.beatgames.beatsaber/Mods/Thanksgiving/Thanksgiving-Gobble-Quiet-Phrase.ogg",
+      "name": "Thanksgiving-Gobble-Quiet-Phrase.ogg"
+    }
+  ]
 }

@@ -106,8 +106,9 @@ jobs:
               cover = manifest.get("coverImage")
               if cover and cover not in names:
                   raise SystemExit(f"QMOD is missing coverImage: {cover}")
+              # Quiet Phrase is the external file copied by the QMOD manifest.
+              # High Note Fade is embedded into libthanksgiving.so via assets.cmake.
               expected_audio = {
-                  "Thanksgiving-Gobble-High-Note-Fade.ogg",
                   "Thanksgiving-Gobble-Quiet-Phrase.ogg",
               }
               actual_audio = {
@@ -119,7 +120,7 @@ jobs:
               for audio_file in expected_audio:
                   if audio_file not in names:
                       raise SystemExit(f"QMOD is missing turkey audio asset: {audio_file}")
-          print("QMOD validated: 1.40.8 manifest, library, cover, and both turkey audio assets.")
+          print("QMOD validated: 1.40.8 manifest, library, cover, and external turkey audio asset.")
           PY
 
       - name: Check release tag matches mod version

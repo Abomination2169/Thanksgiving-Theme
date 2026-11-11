@@ -1,0 +1,158 @@
+name: Build Thanksgiving QMOD
+
+on:
+  push:
+    branches:
+      - main
+      - maintenance/repository-cleanup
+    tags:
+      - "v*"
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    name: Build and validate Quest package
+    # QPM CLI v1.5.12 requires GLIBC 2.38+; Ubuntu 24.04 provides GLIBC 2.39.
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y cmake ninja-build unzip curl python3
+
+      - name: Install QPM CLI
+        env:
+          QPM_VERSION: v1.5.12
+        run: |
+          curl -fsSL "https://github.com/QuestPackageManager/QPM.CLI/releases/download/${QPM_VERSION}/qpm-linux-x64.zip" -o "$RUNNER_TEMP/qpm.zip"
+          mkdir -p "$RUNNER_TEMP/qpm"
+          unzip -q "$RUNNER_TEMP/qpm.zip" -d "$RUNNER_TEMP/qpm"
+          QPM_BIN="$(find "$RUNNER_TEMP/qpm" -type f -name qpm | head -n 1)"
+          test -n "$QPM_BIN"
+          chmod +x "$QPM_BIN"
+          sudo install "$QPM_BIN" /usr/local/bin/qpm
+          qpm --version
+
+      - name: Resolve Android NDK
+        run: qpm ndk resolve -d
+
+      - name: Restore QPM dependencies
+        run: qpm restore
+
+      - name: Validate manifest asset paths
+        run: |
+          python3 - <<'PY'
+          import json
+          from pathlib import Path
+
+          manifest = json.loads(Path("mod.json").read_text(encoding="utf-8"))
+          for entry in manifest.get("fileCopies", []):
+              asset = Path("assets") / Path(entry["name"]).name
+              if not asset.is_file():
+                  raise SystemExit(f"Missing fileCopies asset: {asset}")
+          cover = manifest.get("coverImage")
+          if cover and not Path(cover).is_file():
+              raise SystemExit(f"Missing cover image: {cover}")
+          print("Manifest fileCopies and cover image are present.")
+          PY
+
+      - name: Configure Android build
+        run: |
+          NDK_TOOLCHAIN="$(find "$HOME/.local/share/QPM-RS/ndk" -path '*/build/cmake/android.toolchain.cmake' -print -quit)"
+          test -n "$NDK_TOOLCHAIN"
+          NDK_ROOT="${NDK_TOOLCHAIN%/build/cmake/android.toolchain.cmake}"
+          echo "ANDROID_NDK_HOME=$NDK_ROOT" >> "$GITHUB_ENV"
+          cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
+
+      - name: Compile Thanksgiving mod
+        run: |
+          cmake --build build --parallel
+          test -s build/libthanksgiving.so
+
+      - name: Build and package QMOD
+        run: |
+          qpm qmod zip --import mod.json --skip_build -i ./build -i ./extern/libs -i ./assets
+          test -s Thanksgiving.qmod
+          cp Thanksgiving.qmod Thanksgiving-Theme.qmod
+
+      - name: Validate QMOD archive contents
+        run: |
+          python3 - <<'PY'
+          import json
+          import zipfile
+          from pathlib import Path
+
+          package = Path("Thanksgiving-Theme.qmod")
+          with zipfile.ZipFile(package) as archive:
+              names = set(archive.namelist())
+              if "mod.json" not in names:
+                  raise SystemExit("QMOD is missing mod.json")
+              manifest = json.loads(archive.read("mod.json"))
+              if manifest.get("id") != "thanksgiving":
+                  raise SystemExit("Unexpected mod id in packaged manifest")
+              if manifest.get("packageVersion") != "1.40.8_7379":
+                  raise SystemExit("Packaged manifest no longer targets Beat Saber 1.40.8_7379")
+              if "libthanksgiving.so" not in names:
+                  raise SystemExit("QMOD is missing libthanksgiving.so")
+              cover = manifest.get("coverImage")
+              if cover and cover not in names:
+                  raise SystemExit(f"QMOD is missing coverImage: {cover}")
+              # Quiet Phrase is the external file copied by the QMOD manifest.
+              # High Note Fade is embedded into libthanksgiving.so via assets.cmake.
+              expected_audio = {
+                  "Thanksgiving-Gobble-Quiet-Phrase.ogg",
+              }
+              actual_audio = {
+                  Path(entry["name"]).name
+                  for entry in manifest.get("fileCopies", [])
+              }
+              if actual_audio != expected_audio:
+                  raise SystemExit(f"Unexpected fileCopies list: {sorted(actual_audio)}")
+              for audio_file in expected_audio:
+                  if audio_file not in names:
+                      raise SystemExit(f"QMOD is missing turkey audio asset: {audio_file}")
+          print("QMOD validated: 1.40.8 manifest, library, cover, and external turkey audio asset.")
+          PY
+
+      - name: Check release tag matches mod version
+        if: startsWith(github.ref, 'refs/tags/')
+        run: |
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+          MOD_VERSION="$(python3 -c 'import json; print(json.load(open("mod.json"))["version"])')"
+          if [ "$TAG_VERSION" != "$MOD_VERSION" ]; then
+            echo "Tag version $TAG_VERSION does not match mod.json version $MOD_VERSION"
+            exit 1
+          fi
+
+      - name: Create source archive
+        if: startsWith(github.ref, 'refs/tags/')
+        run: git archive --format=zip --prefix=Thanksgiving-Theme/ HEAD -o Thanksgiving-Theme-GitHub-Source.zip
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Thanksgiving-QMOD
+          path: Thanksgiving-Theme.qmod
+          if-no-files-found: error
+
+      - name: Publish tagged release
+        # v1.0.1 is an existing headset-tested release. Repointing its source
+        # tag must not upload or replace any of its published release assets.
+        if: startsWith(github.ref, 'refs/tags/') && github.ref_name != 'v1.0.1'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: Thanksgiving Theme ${{ github.ref_name }}
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            Thanksgiving-Theme.qmod
+            Thanksgiving-Theme-GitHub-Source.zip

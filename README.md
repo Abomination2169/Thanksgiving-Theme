@@ -8,7 +8,7 @@ Watch Thanksgiving Theme in action!
 
 Happy Thanksgiving!
 
-Transform your Beat Saber menu with golden harvest lighting, seasonal decorations, and falling leaves!
+Transform your Beat Saber menu with golden harvest lighting, seasonal decorations, and gently falling leaves!
 
 Based on the fantastic Christmas Mod by Vcmikuu and CatsaCode.
 

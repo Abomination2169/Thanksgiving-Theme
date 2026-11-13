@@ -1,6 +1,12 @@
-## 🥂 New Years Theme — Video
+## 🦃 Thanksgiving Theme — Video
 
-Happy Happy New Years!
+Watch Thanksgiving Theme in action!
+
+[![Thanksgiving Theme — Beat Saber](Thanksgiving-README.png)](https://www.youtube.com/watch?v=t5VIwbuC9vc)
+
+▶️ **Watch on YouTube:** https://www.youtube.com/watch?v=t5VIwbuC9vc
+
+Happy Thanksgiving!
 
 Transform your Beat Saber menu with golden harvest lighting, seasonal decorations, and gently falling leaves!
 
@@ -23,7 +29,7 @@ The combined mod's code is distributed under the **GNU General Public License, v
 ## Attribution and modifications
 
 - **Vcmikuu and CatsaCode:** Creators of the original [Christmas Theme](https://github.com/vcmikuu/ChristmasTheme), on whose source this mod is based. Thank you both for the inspiration and your permission. 
-- **Abomination2169:** Seasonal adaptation, code and asset changes, maintenance and distribution of New Years Theme.
+- **Abomination2169:** Seasonal adaptation, code and asset changes, maintenance and distribution of Thanksgiving Theme.
 - **Quest Mod Template:** By [Lauriethefish, danrouse and Bobby Shmurner](https://github.com/Lauriethefish/quest-mod-template), originally provided under the Unlicense. Credit also goes to the dependency/library authors acknowledged in [Christmas Theme's README](https://github.com/vcmikuu/ChristmasTheme#credits).
 
 This mod substantially changes the original Christmas setting into a thanksgiving theme, including its seasonal effects and presentation. These modifications were made in 2026. Development was assisted with AI; please support the original artists and developers. Third-party assets, audio, and dependencies may carry their own licenses and require separate review; GPLv3 permission for Christmas Theme code does not automatically cover them.

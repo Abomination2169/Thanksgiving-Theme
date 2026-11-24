@@ -1,4 +1,10 @@
 #include "main.hpp"
+#include "UnityEngine/Material.hpp"
+#include "UnityEngine/MaterialPropertyBlock.hpp"
+#include "UnityEngine/MeshRenderer.hpp"
+#include "UnityEngine/MonoBehaviour.hpp"
+#include "UnityEngine/Resources.hpp"
+#include "UnityEngine/Shader.hpp"
 
 
 #include "GlobalNamespace/NoteController.hpp"
@@ -48,6 +54,126 @@
 
 using namespace GlobalNamespace;
 using namespace UnityEngine;
+
+namespace {
+    constexpr const char* floorDiagnosticBuild = "menu-floor-restoration-v3";
+    SafePtrUnity<MeshRenderer> menuFloor;
+    Color menuFloorBaseline{};
+    bool hasMenuFloorBaseline = false;
+    bool floorRestorationActive = false;
+    bool loggedFloorRestore = false;
+
+    MeshRenderer* FindMenuFloor(int colorProperty) {
+        for (auto* renderer : Resources::FindObjectsOfTypeAll<MeshRenderer*>()) {
+            if (!renderer || !renderer->get_enabled()) continue;
+            auto go = renderer->get_gameObject();
+            if (!go || !go->get_activeInHierarchy() || go->get_name() != "BasicMenuGround") continue;
+            const auto materials = renderer->get_sharedMaterials();
+            if (materials.size() != 1) continue;
+            auto material = materials[0];
+            if (material && material->get_name() == "MenuFloor" && material->HasProperty(colorProperty))
+                return renderer;
+        }
+        return nullptr;
+    }
+
+}
+
+// Unity copies this block into the renderer. Restore the caller's value after
+// submission in case the same block is reused for other environment meshes.
+MAKE_HOOK_MATCH(MenuFloorSetPropertyBlock,
+    static_cast<void (Renderer::*)(MaterialPropertyBlock*)>(&Renderer::SetPropertyBlock),
+    void, Renderer* self, MaterialPropertyBlock* block) {
+    if (block && hasMenuFloorBaseline && floorRestorationActive && menuFloor &&
+        self == static_cast<Renderer*>(menuFloor.ptr()) && getModConfig().EnableHauntedEnvColors.GetValue()) {
+        static const int colorProperty = Shader::PropertyToID("_Color");
+        const auto incoming = block->GetColor(colorProperty);
+        // Ignore neutral and unset overrides, including the guard's own writes.
+        if ((incoming.r != incoming.g || incoming.g != incoming.b) &&
+            (incoming.r != menuFloorBaseline.r || incoming.g != menuFloorBaseline.g ||
+             incoming.b != menuFloorBaseline.b || incoming.a != menuFloorBaseline.a)) {
+            block->SetColor(colorProperty, menuFloorBaseline);
+            MenuFloorSetPropertyBlock(self, block);
+            block->SetColor(colorProperty, incoming);
+            if (!loggedFloorRestore) {
+                loggedFloorRestore = true;
+                INFO("[MenuFloorRestoration] intercepted BasicMenuGround _Color before submission RGBA=({},{},{},{})",
+                     incoming.r, incoming.g, incoming.b, incoming.a);
+            }
+            return;
+        }
+    }
+    MenuFloorSetPropertyBlock(self, block);
+}
+
+DECLARE_CLASS_CODEGEN(Thanksgiving, FloorRendererSample, UnityEngine::MonoBehaviour) {
+    DECLARE_INSTANCE_FIELD(float, nextLookupAt);
+    DECLARE_INSTANCE_FIELD(UnityEngine::MaterialPropertyBlock*, propertyBlock);
+    DECLARE_INSTANCE_METHOD(void, LateUpdate);
+};
+DEFINE_TYPE(Thanksgiving, FloorRendererSample);
+
+void Thanksgiving::FloorRendererSample::LateUpdate() {
+    if (UnityEngine::SceneManagement::SceneManager::GetActiveScene().name == "GameCore") {
+        if (!floorRestorationActive) loggedFloorRestore = false;
+        floorRestorationActive = true;
+        return;
+    }
+    if (hasMenuFloorBaseline && (!floorRestorationActive || !getModConfig().EnableHauntedEnvColors.GetValue())) return;
+
+    static const int colorProperty = Shader::PropertyToID("_Color");
+    if (!menuFloor) {
+        const float now = Time::get_realtimeSinceStartup();
+        if (now < nextLookupAt) return;
+        nextLookupAt = now + 0.5f;
+        menuFloor = FindMenuFloor(colorProperty);
+        if (!menuFloor) return;
+    }
+
+    auto* renderer = menuFloor.ptr();
+    auto go = renderer->get_gameObject();
+    if (!go || !go->get_activeInHierarchy() || !renderer->get_enabled()) return;
+    renderer->GetPropertyBlock(propertyBlock);
+    const auto current = propertyBlock->GetColor(colorProperty);
+
+    if (!hasMenuFloorBaseline) {
+        if (floorRestorationActive) return;
+        // An unset override is reported as zero by the Quest binding.
+        const bool unset = current.r == 0 && current.g == 0 && current.b == 0 && current.a == 0;
+        menuFloorBaseline = unset ? renderer->get_sharedMaterials()[0]->GetColor(colorProperty) : current;
+        hasMenuFloorBaseline = true;
+        INFO("[MenuFloorRestoration] baselineRGBA=({},{},{},{})",
+             menuFloorBaseline.r, menuFloorBaseline.g, menuFloorBaseline.b, menuFloorBaseline.a);
+        return;
+    }
+
+    if (current.r == menuFloorBaseline.r && current.g == menuFloorBaseline.g &&
+        current.b == menuFloorBaseline.b && current.a == menuFloorBaseline.a) return;
+    // Preserve the other properties written by the menu lighting system.
+    propertyBlock->SetColor(colorProperty, menuFloorBaseline);
+    renderer->SetPropertyBlock(propertyBlock);
+    if (!loggedFloorRestore) {
+        loggedFloorRestore = true;
+        INFO("[MenuFloorRestoration] LateUpdate corrected BasicMenuGround from RGBA=({},{},{},{})",
+             current.r, current.g, current.b, current.a);
+    }
+}
+
+namespace {
+    void StartMenuFloorRestoration() {
+        auto* probe = GameObject::New_ctor("ThanksgivingMenuFloorRestoration");
+        auto* sampler = probe->AddComponent<Thanksgiving::FloorRendererSample*>();
+        if (!sampler) {
+            GameObject::Destroy(probe);
+            INFO("[MenuFloorRestoration] Failed to create floor controller");
+            return;
+        }
+        sampler->nextLookupAt = Time::get_realtimeSinceStartup() + 0.5f;
+        sampler->propertyBlock = MaterialPropertyBlock::New_ctor();
+        GameObject::DontDestroyOnLoad(probe);
+    }
+}
+
 
 
 static modloader::ModInfo modInfo{MOD_ID, VERSION, 0};
@@ -208,6 +334,7 @@ MAKE_HOOK_MATCH(AutumnLeavesInit, &GlobalNamespace::MainMenuViewController::DidA
     Thanksgiving::Audio::EnterMenu(self);
 
     if(!firstActivation) return;
+    StartMenuFloorRestoration();
 
     Thanksgiving::logoColors::ApplyLogoColors();
 
@@ -239,6 +366,7 @@ MOD_EXTERN_FUNC void late_load() noexcept {
     //INSTALL_HOOK(PaperLogger, NoteControllerInit);
     // Keep the game's original Beat Saber logo; no logo replacement code is compiled.
     INSTALL_HOOK(PaperLogger, OverrideEnvironmentColors);
+    INSTALL_HOOK(PaperLogger, MenuFloorSetPropertyBlock);
     INSTALL_HOOK(PaperLogger, ThanksgivingSteadyEInit);
     INSTALL_HOOK(PaperLogger, AutumnLeavesInit);
     INSTALL_HOOK(PaperLogger, ThanksgivingLevelSelectionDidActivate);

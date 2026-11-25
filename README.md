@@ -1,6 +1,4 @@
-## 🦃 Thanksgiving Theme — Video
-
-Watch Thanksgiving Theme in action!
+## 🦃 Thanksgiving Theme
 
 [![Thanksgiving Theme — Beat Saber](Thanksgiving-README.png)](https://www.youtube.com/watch?v=t5VIwbuC9vc)
 
